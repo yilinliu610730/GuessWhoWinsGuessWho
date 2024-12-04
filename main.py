@@ -1,9 +1,10 @@
 # main.py
 from data.characters import all_possible_characters
 from random_agent import RandomAgent
-# from q_learning_agent import QLearningAgent
 from oracle_agent import OracleAgent
 from greedy_agent import GreedyAgent
+from q_learning_agent import QLearningAgent
+from q_learning_trainer import QLearningTrainer
 
 def main():
     # Prompt the user to select a game mode
@@ -34,9 +35,8 @@ def main():
     if game_mode == 1:
         agent = RandomAgent()
     elif game_mode == 2:
-        # Initialize QLearningAgent if available
-        # agent = QLearningAgent()
-        return
+        # QLearningTrainer().train()
+        agent = QLearningAgent()
     elif game_mode == 3:
         agent = OracleAgent()
     elif game_mode == 4:

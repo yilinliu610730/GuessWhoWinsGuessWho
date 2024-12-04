@@ -12,7 +12,7 @@ class Agent:
         self.asked_questions = set()
         self.possible_characters = list(all_possible_characters.keys())
         self.total_questions_asked = 0
-        self.game_status = 0  # 0: ongoing, 1: win, -1: lost
+        self.game_status = 0 
 
     def assign_char(self, char_name=None):
         """

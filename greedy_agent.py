@@ -83,6 +83,7 @@ class GreedyAgent(Agent):
             if guessed_character == target_character:
                 self.game_status = 1 
                 print(f"The agent successfully identified the character: '{guessed_character}' in {self.total_questions_asked} questions.")
+                return self.total_questions_asked
             else:
                 self.game_status = -1 
                 print(f"The agent guessed '{guessed_character}', but it was incorrect. Game status: Lost.")

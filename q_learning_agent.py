@@ -1,9 +1,9 @@
 from agent import Agent
 from data.characters import all_possible_characters
-from data.optimal_question_seq import optimal_question_sequence
+# from data.optimal_question_seq import optimal_question_sequence
 
 class QLearningAgent(Agent):
-    def __init__(self):
+    def __init__(self, optimal_question_sequence):
         super().__init__()
         self.possible_characters = list(all_possible_characters.keys())
         self.steps_taken = 0
@@ -11,6 +11,7 @@ class QLearningAgent(Agent):
         self.current_question = None
         self.state = tuple(sorted(self.possible_characters))
         self.asked_questions = set()  # Track questions that have been asked
+        self.optimal_question_sequence = optimal_question_sequence
 
     def ask_question(self):
         """
@@ -24,6 +25,7 @@ class QLearningAgent(Agent):
         """
         Determines the answer ('yes' or 'no') for a given question based on the target character's attributes.
         """
+        print(f"Question: {question}")
         question_index = self.question_bank.index(question)
         target_attributes = all_possible_characters[target_character]
         return "yes" if target_attributes[question_index] == 1 else "no"
@@ -48,7 +50,7 @@ class QLearningAgent(Agent):
         # Try to find a question from the most similar state
         most_similar_state = self.find_most_similar_state(sorted_state)
         if most_similar_state:
-            question = optimal_question_sequence.get(most_similar_state)
+            question = self.optimal_question_sequence.get(most_similar_state)
             if question and question not in self.asked_questions:
                 return question
 
@@ -67,7 +69,7 @@ class QLearningAgent(Agent):
         most_similar_state = None
 
         # Loop through all possible states to find the most similar one
-        for state in optimal_question_sequence.keys():
+        for state in self.optimal_question_sequence.keys():
             overlap = len(set(current_state).intersection(set(state)))
 
             # Update the most similar state if this one has more overlap
@@ -89,8 +91,8 @@ class QLearningAgent(Agent):
                 return
 
         # Use the optimal sequence for the current sorted state
-        if sorted_state in optimal_question_sequence:
-            self.current_question = optimal_question_sequence[sorted_state]
+        if sorted_state in self.optimal_question_sequence:
+            self.current_question = self.optimal_question_sequence[sorted_state]
 
     def play_game(self, target_character):
         """
@@ -100,8 +102,8 @@ class QLearningAgent(Agent):
 
         if self.current_question is None:
             sorted_state = tuple(sorted(self.state))
-            if sorted_state in optimal_question_sequence:
-                self.current_question = optimal_question_sequence[sorted_state]
+            if sorted_state in self.optimal_question_sequence:
+                self.current_question = self.optimal_question_sequence[sorted_state]
 
         while len(self.possible_characters) > 1 and self.steps_taken < 20:
             self.steps_taken += 1
@@ -124,10 +126,10 @@ class QLearningAgent(Agent):
             if guessed_character == target_character:
                 self.game_status = 1
                 print(f"The agent successfully identified the character: '{guessed_character}' in {self.steps_taken} steps!")
+                return self.steps_taken
             else:
                 self.game_status = -1
                 print(f"The agent guessed '{guessed_character}', but it was incorrect. Game status: Lost.")
-            return
         else:
             self.game_status = -1
             print("Could not determine the character with certainty.")

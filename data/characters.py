@@ -28,6 +28,7 @@ all_possible_characters = {
 # for value in all_possible_characters.values():
 #     print(len(value))
 
+# 28 questions
 question_bank = [
     "Are they a male?",
     "Are they bald?",

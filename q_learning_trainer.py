@@ -3,7 +3,7 @@ import numpy as np
 from data.characters import all_possible_characters, question_bank
 
 class QLearningTrainer:
-    def __init__(self, epochs=10000, epsilon=0.15, learning_rate=0.1, discount_factor=0.9):
+    def __init__(self, reward_func, epochs=10000, epsilon=0.5, learning_rate=0.1, discount_factor=0.8):
         self.epochs = epochs
         self.epsilon = epsilon
         self.learning_rate = learning_rate
@@ -13,6 +13,9 @@ class QLearningTrainer:
         self.q_table = np.zeros((len(self.state_space), len(self.action_space)))
         self.optimal_questions = {}
         self.current_best_reward = {}
+        self.reward_function = reward_func
+        random.seed(42)
+        np.random.seed(42)
 
     def choose_action(self, state, asked_questions):
         available_actions = [a for a in self.action_space if a not in asked_questions]
@@ -45,7 +48,7 @@ class QLearningTrainer:
         self.q_table[state_index, action_index] = new_q
 
     def run_epoch(self, target_character):
-        print(f"Starting epoch to train agent for target character: {target_character}")
+        # print(f"Starting epoch to train agent for target character: {target_character}")
 
         possible_characters = list(all_possible_characters.keys())
         steps_taken = 0
@@ -75,11 +78,9 @@ class QLearningTrainer:
             previous_count = len(possible_characters)
             possible_characters = self.eliminate_characters(possible_characters, question_index, answer)
             eliminated_count = previous_count - len(possible_characters)
-
-            if eliminated_count > 0:
-                reward = (eliminated_count / previous_count) * 20
-            else:
-                reward = -10
+            is_terminal = len(possible_characters) == 1
+            reward = self.reward_function(eliminated_count, previous_count, is_terminal)
+            # print(f"eliminated_count: {eliminated_count}, previous_count: {previous_count}, is_terminal: {is_terminal}, reward: {reward}")
 
             # Update the Q-value
             self.update_q_value(state, question_index, reward, tuple(sorted(possible_characters)))
@@ -91,7 +92,7 @@ class QLearningTrainer:
 
             steps_taken += 1
 
-        self.evaluate_result(target_character, possible_characters)
+        # self.evaluate_result(target_character, possible_characters)
 
     def determine_answer(self, target_character, question):
         question_index = question_bank.index(question)
@@ -115,8 +116,12 @@ class QLearningTrainer:
             print("Epoch ended: The agent was unable to identify the character.")
 
     def train(self):
+        print(f"Reward Function: {self.reward_function.__name__}")
+        self.q_table = np.zeros((len(self.state_space), len(self.action_space)))  # Reset Q-table
+        self.current_best_reward = {}  # Reset state tracking
+        self.optimal_questions = {}  # Reset optimal questions
         for epoch in range(self.epochs):
-            print(f"\nEpoch {epoch + 1} of {self.epochs}...")
+            # print(f"\nEpoch {epoch + 1} of {self.epochs}...")
             target_character = random.choice(list(all_possible_characters.keys()))
             self.run_epoch(target_character)
 
@@ -124,7 +129,7 @@ class QLearningTrainer:
         self.save_optimal_question_sequence()
 
     def save_optimal_question_sequence(self):
-        with open("data/optimal_question_seq.py", "w") as f:
+        with open(f"data/optimal_question_seq.py", "w") as f:
             f.write("optimal_question_sequence = {\n")
             for state, question in self.optimal_questions.items():
                 sorted_state_tuple = tuple(sorted(state))
@@ -132,5 +137,13 @@ class QLearningTrainer:
             f.write("}\n")
         print("Optimal question sequence saved to optimal_question_seq.py")
 
-if __name__ == "__main__":
-    QLearningTrainer().train()
+# if __name__ == "__main__":
+#     def reward_function(eliminated_count, previous_count, is_terminal=None):
+#         if is_terminal:
+#             print('terminal')
+#         if eliminated_count > 0:
+#             reward = (eliminated_count / previous_count) * 2
+#         else:
+#             reward = -1
+#         return reward
+#     QLearningTrainer(reward_function).train()

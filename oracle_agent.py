@@ -68,6 +68,7 @@ class OracleAgent(Agent):
                 if guessed_character == target_character:
                     self.game_status = 1  # Game status indicates a win
                     print(f"The agent successfully identified the character: '{guessed_character}' in {self.steps_taken} steps!")
+                    return self.steps_taken
                 else:
                     self.game_status = -1  # Game status indicates a loss
                     print(f"The agent guessed '{guessed_character}', but it was incorrect. Game status: Lost.")

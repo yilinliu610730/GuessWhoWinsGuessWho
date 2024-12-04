@@ -46,12 +46,12 @@ def main():
     agent.play_game(target_character)
 
     # Check the game status
-    if agent.game_status == 1:
-        print(f"The agent successfully guessed the character '{target_character}' in {agent.total_questions_asked} questions.")
-    elif agent.game_status == -1:
-        print("The agent failed to guess the character.")
-    else:
-        print("The game is still ongoing.")
+    # if agent.game_status == 1:
+    #     print(f"The agent successfully guessed the character '{target_character}' in {agent.total_questions_asked} questions.")
+    # elif agent.game_status == -1:
+    #     print("The agent failed to guess the character.")
+    # else:
+    #     print("The game is still ongoing.")
 
 if __name__ == "__main__":
     main()

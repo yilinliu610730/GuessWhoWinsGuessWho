@@ -43,7 +43,7 @@ class RandomAgent(Agent):
         
         target_attributes = all_possible_characters[target_character]
         
-        while len(self.possible_characters) > 1 and self.total_questions_asked < 20:
+        while len(self.possible_characters) > 1:
             q_index, question_text = self.ask_random_question()
             if q_index is None:
                 print("No more questions available. Game over.")
@@ -61,9 +61,12 @@ class RandomAgent(Agent):
             if guessed_character == target_character:
                 self.game_status = 1  # Success
                 print(f"The agent successfully identified the character: '{guessed_character}' in {self.total_questions_asked} questions.")
+                return self.total_questions_asked
             else:
                 self.game_status = -1  # Incorrect guess
                 print(f"The agent guessed '{guessed_character}', but it was incorrect. Game status: Lost.")
         else:
             self.game_status = -1  # Game over without a definite guess
             print("Could not determine the character with certainty.")
+
+        

@@ -4,18 +4,22 @@ from data.optimal_question_seq_new import optimal_question_sequence
 
 
 class QLearningAgent(Agent):
-    def __init__(self):
+    def __init__(self, input_question_sequence=None):
         self.possible_characters = list(all_possible_characters.keys())
         self.steps_taken = 0
         self.asked_questions = set()
         self.last_answer = None
+        if input_question_sequence:
+            self.optimal_question_sequence = input_question_sequence
+        else: 
+            self.optimal_question_sequence = optimal_question_sequence
 
     def ask_question(self, state):
         """
         Determines the question to ask based on the optimal policy.
         """
-        if state in optimal_question_sequence:
-            question_text = optimal_question_sequence[state]
+        if state in self.optimal_question_sequence:
+            question_text = self.optimal_question_sequence[state]
             question_index = question_bank.index(question_text)
             print(f"Question: {question_text}")
             return question_index, question_text

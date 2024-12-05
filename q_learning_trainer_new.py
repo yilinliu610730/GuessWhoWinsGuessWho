@@ -3,7 +3,7 @@ import numpy as np
 from data.characters import all_possible_characters, question_bank
 
 class QLearningTrainer:
-    def __init__(self, reward_func, epochs=20000, epsilon=0.3, learning_rate=0.1, discount_factor=0.8):
+    def __init__(self, reward_func, epochs=20000, epsilon=0.3, learning_rate=0.5, discount_factor=0.6):
         self.epochs = epochs
         self.epsilon = epsilon
         self.learning_rate = learning_rate
@@ -101,7 +101,8 @@ class QLearningTrainer:
             target_character = random.choice(list(all_possible_characters.keys()))
             self.run_epoch(target_character)
         print(f"Training finished after {self.epochs} epochs.")
-        self.save_optimal_question_sequence()
+        optimal_policy  = self.save_optimal_question_sequence()
+        return optimal_policy
 
     def save_optimal_question_sequence(self):
         optimal_question_sequence = {}
@@ -118,22 +119,20 @@ class QLearningTrainer:
             f.write("optimal_question_sequence = {\n")
             for state, action in optimal_question_sequence.items():
                 question_text = question_bank[action]
+                optimal_question_sequence[state] = question_bank[action]
                 f.write(f'    {tuple(state)}: "{question_text}",\n')
             f.write("}\n")
         print("Optimal question sequence saved to optimal_question_seq.py")
+        return optimal_question_sequence
 
 # Define a reward function
-def reward_function(eliminated_count, previous_count, is_terminal):
-    """
-    Defines the reward function for the Q-learning agent.
-    """
-    if is_terminal:
-        return 10  # High reward for reaching terminal state
-    elif eliminated_count > 0:
-        return (eliminated_count / previous_count) * 2
+def reward_func1(eliminated_count, previous_count, is_terminal=None):
+    if eliminated_count > 0:
+        reward = (eliminated_count / previous_count) * 2
     else:
-        return -1  # Penalty for not eliminating any characters
+        reward = -1
+    return reward
 
 
 if __name__ == "__main__":
-    QLearningTrainer(reward_function).train()
+    QLearningTrainer(reward_func1).train()

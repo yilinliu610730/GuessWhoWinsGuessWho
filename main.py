@@ -3,8 +3,8 @@ from data.characters import all_possible_characters
 from random_agent import RandomAgent
 from oracle_agent import OracleAgent
 from greedy_agent import GreedyAgent
-from q_learning_agent import QLearningAgent
-from q_learning_trainer import QLearningTrainer
+from q_learning_agent_new import QLearningAgent
+# from q_learning_trainer_new import QLearningTrainer
 
 def main():
     # Prompt the user to select a game mode

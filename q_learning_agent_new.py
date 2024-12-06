@@ -55,7 +55,7 @@ class QLearningAgent(Agent):
         self.asked_questions = set()
         self.last_answer = None
 
-        while len(self.possible_characters) > 1 and self.steps_taken < 20:
+        while len(self.possible_characters) > 1:
             self.steps_taken += 1
 
             # Construct the current state

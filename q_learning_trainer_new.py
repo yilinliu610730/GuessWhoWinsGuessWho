@@ -3,7 +3,7 @@ import numpy as np
 from data.characters import all_possible_characters, question_bank
 
 class QLearningTrainer:
-    def __init__(self, reward_func, epochs=20000, epsilon=0.3, learning_rate=0.5, discount_factor=0.6):
+    def __init__(self, reward_func, epochs=20000, epsilon=0.3, learning_rate=0.1, discount_factor=0.8):
         self.epochs = epochs
         self.epsilon = epsilon
         self.learning_rate = learning_rate
